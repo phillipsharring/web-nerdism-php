@@ -1,44 +1,36 @@
 <?php
+
 declare(strict_types=1);
 
-// It works. Now try to say what Mgr is for, what proc() does, or what X is,
-// without reading every line.
-
-const X = 5000;
-
-class Mgr
+// One class, one vague name, and it quietly does everything: checks who's
+// asking, checks the input, enforces a rule, saves, and sends email.
+class PostManager
 {
-    private array $d;
+    private array $posts = [];
 
-    public function __construct(array $d)
+    public function process(array $data, string $user): string
     {
-        $this->d = $d;
-    }
-
-    public function proc(): array
-    {
-        $out = [];
-        foreach ($this->d as $o) {
-            if ($this->chk($o)) {
-                $out[] = $o['id'];
+        if (($data['author'] ?? '') !== $user) {
+            return 'Refused: only the author can save this post.';
+        }
+        $title = trim((string) ($data['title'] ?? ''));
+        if ($title === '') {
+            return 'Refused: a post needs a title.';
+        }
+        foreach ($this->posts as $post) {
+            if ($post['slug'] === $data['slug']) {
+                return 'Refused: that slug is taken.';
             }
         }
-        return $out;
-    }
+        $this->posts[] = ['title' => $title, 'slug' => $data['slug'], 'author' => $data['author']];
+        echo "Emailing subscribers: new post \"$title\"\n";
 
-    private function chk(array $o): bool
-    {
-        $flag = $o['paid'] && !$o['nonUs'];
-        return $flag && $o['cents'] >= X;
+        return 'Saved.';
     }
 }
 
-$m = new Mgr([
-    ['id' => 'A-1001', 'paid' => true, 'nonUs' => false, 'cents' => 6400],
-    ['id' => 'A-1002', 'paid' => false, 'nonUs' => false, 'cents' => 9900],
-    ['id' => 'A-1003', 'paid' => true, 'nonUs' => false, 'cents' => 5000],
-    ['id' => 'A-1004', 'paid' => true, 'nonUs' => true, 'cents' => 12000],
-    ['id' => 'A-1005', 'paid' => true, 'nonUs' => false, 'cents' => 1800],
-]);
-
-echo 'Free shipping: ' . implode(', ', $m->proc()) . "\n";
+$manager = new PostManager();
+echo $manager->process(['title' => 'Hello', 'slug' => 'hello', 'author' => 'alice'], 'alice'), "\n";
+echo $manager->process(['title' => 'Again', 'slug' => 'hello', 'author' => 'alice'], 'alice'), "\n";
+echo $manager->process(['title' => ' ', 'slug' => 'blank', 'author' => 'alice'], 'alice'), "\n";
+echo $manager->process(['title' => 'Sneaky', 'slug' => 'sneaky', 'author' => 'alice'], 'bob'), "\n";

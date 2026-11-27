@@ -1,44 +1,122 @@
 <?php
+
 declare(strict_types=1);
 
-// The same code as before.php, line for line. Only the names changed, and one
-// ! went away with the negative name that needed it.
+// The same behavior, split into pieces, each named for what it is.
 
-const FREE_SHIPPING_MINIMUM_CENTS = 5000;
-
-class FreeShippingPolicy
+// A record: a thing with an identity. A noun.
+final class Post
 {
-    private array $orders;
+    public string $title;
+    public string $slug;
+    public string $author;
 
-    public function __construct(array $orders)
+    public function __construct(string $title, string $slug, string $author)
     {
-        $this->orders = $orders;
-    }
-
-    public function qualifyingOrderIds(): array
-    {
-        $orderIds = [];
-        foreach ($this->orders as $order) {
-            if ($this->qualifies($order)) {
-                $orderIds[] = $order['id'];
-            }
-        }
-        return $orderIds;
-    }
-
-    private function qualifies(array $order): bool
-    {
-        $isPaidAndDomestic = $order['isPaid'] && $order['isDomestic'];
-        return $isPaidAndDomestic && $order['totalCents'] >= FREE_SHIPPING_MINIMUM_CENTS;
+        $this->title = $title;
+        $this->slug = $slug;
+        $this->author = $author;
     }
 }
 
-$policy = new FreeShippingPolicy([
-    ['id' => 'A-1001', 'isPaid' => true, 'isDomestic' => true, 'totalCents' => 6400],
-    ['id' => 'A-1002', 'isPaid' => false, 'isDomestic' => true, 'totalCents' => 9900],
-    ['id' => 'A-1003', 'isPaid' => true, 'isDomestic' => true, 'totalCents' => 5000],
-    ['id' => 'A-1004', 'isPaid' => true, 'isDomestic' => false, 'totalCents' => 12000],
-    ['id' => 'A-1005', 'isPaid' => true, 'isDomestic' => true, 'totalCents' => 1800],
-]);
+// A policy: may this person do this?
+final class PostPolicy
+{
+    public function maySave(string $user, array $data): bool
+    {
+        return ($data['author'] ?? '') === $user;
+    }
+}
 
-echo 'Free shipping: ' . implode(', ', $policy->qualifyingOrderIds()) . "\n";
+// Validation: is this input acceptable? Never trust input.
+final class PostInput
+{
+    public function problem(array $data): ?string
+    {
+        if (trim((string) ($data['title'] ?? '')) === '') {
+            return 'a post needs a title.';
+        }
+
+        return null;
+    }
+}
+
+// Where posts are kept, and the rule that must always hold there, however a
+// post arrives: no two posts share a slug. That rule is an invariant.
+final class PostsTable
+{
+    private array $posts = [];
+
+    public function add(Post $post): bool
+    {
+        foreach ($this->posts as $existing) {
+            if ($existing->slug === $post->slug) {
+                return false;
+            }
+        }
+        $this->posts[] = $post;
+
+        return true;
+    }
+}
+
+// An event: something that already happened. Past tense.
+final class PostSaved
+{
+    public Post $post;
+
+    public function __construct(Post $post)
+    {
+        $this->post = $post;
+    }
+}
+
+// A listener: what happens because of the event.
+final class NotifySubscribers
+{
+    public function handle(PostSaved $event): void
+    {
+        echo "Emailing subscribers: new post \"{$event->post->title}\"\n";
+    }
+}
+
+// An action: what someone asked for. A verb.
+final class SavePost
+{
+    private PostPolicy $policy;
+    private PostInput $input;
+    private PostsTable $posts;
+    private NotifySubscribers $notifySubscribers;
+
+    public function __construct(PostPolicy $policy, PostInput $input, PostsTable $posts, NotifySubscribers $notifySubscribers)
+    {
+        $this->policy = $policy;
+        $this->input = $input;
+        $this->posts = $posts;
+        $this->notifySubscribers = $notifySubscribers;
+    }
+
+    public function handle(array $data, string $user): string
+    {
+        if (!$this->policy->maySave($user, $data)) {
+            return 'Refused: only the author can save this post.';
+        }
+        $problem = $this->input->problem($data);
+        if ($problem !== null) {
+            return "Refused: $problem";
+        }
+        $post = new Post(trim((string) $data['title']), (string) $data['slug'], (string) $data['author']);
+        if (!$this->posts->add($post)) {
+            return 'Refused: that slug is taken.';
+        }
+        $this->notifySubscribers->handle(new PostSaved($post));
+
+        return 'Saved.';
+    }
+}
+
+$savePost = new SavePost(new PostPolicy(), new PostInput(), new PostsTable(), new NotifySubscribers());
+echo $savePost->handle(['title' => 'Hello', 'slug' => 'hello', 'author' => 'alice'], 'alice'), "\n";
+echo $savePost->handle(['title' => 'Again', 'slug' => 'hello', 'author' => 'alice'], 'alice'), "\n";
+echo $savePost->handle(['title' => ' ', 'slug' => 'blank', 'author' => 'alice'], 'alice'), "\n";
+echo $savePost->handle(['title' => 'Sneaky', 'slug' => 'sneaky', 'author' => 'alice'], 'bob'), "\n";
