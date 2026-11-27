@@ -25,15 +25,16 @@ cli() { # cli DIR ARGS...
     docker run --rm -v "$ROOT/$dir":/app -w /app "$IMAGE" php "$@" 2>&1
 }
 
-serve() { # serve DIR
+serve() { # serve DIR [EXTRA PHP -S ARGS...]
+    local dir="$1"; shift
     docker rm -f wnp-test >/dev/null 2>&1
-    docker run -d --name wnp-test -p "$PORT:8000" -v "$ROOT/$1":/app -w /app "$IMAGE" \
-        php -S 0.0.0.0:8000 >/dev/null
+    docker run -d --name wnp-test -p "$PORT:8000" -v "$ROOT/$dir":/app -w /app "$IMAGE" \
+        php -S 0.0.0.0:8000 "$@" >/dev/null
     for _ in $(seq 1 30); do
         curl -s -o /dev/null "http://localhost:$PORT/" && return 0
         sleep 0.5
     done
-    echo "server in $1 never answered"; return 1
+    echo "server in $dir never answered"; return 1
 }
 stop() { docker rm -f wnp-test >/dev/null 2>&1; }
 trap stop EXIT
@@ -132,6 +133,18 @@ expect "the Host comes through unchanged" "$out" "Host:                   localh
 expect "the proxy marks the answer" "$(curl -sI "http://localhost:$PORT/")" "X-Passed-Through: proxy"
 expect "a forged address arrives first, the real one last" "$(curl -s -H 'X-Forwarded-For: 1.2.3.4' "http://localhost:$PORT/")" "X-Forwarded-For:        1.2.3.4, "
 mid down >/dev/null 2>&1
+
+echo "document-root"
+serve document-root -t public
+expect "the page reads the settings from outside public/" "$(curl -s "http://localhost:$PORT/")" "Hello from the document root."
+for path in /.env /../.env; do
+    out="$(curl -s --path-as-is "http://localhost:$PORT$path")"
+    if grep -qF "API_KEY" <<< "$out"; then fail "-t public keeps $path private" "$out"; else pass "-t public keeps $path private"; fi
+done
+stop
+serve document-root
+expect "serving the whole project hands over .env" "$(curl -s "http://localhost:$PORT/.env")" "API_KEY="
+stop
 
 echo
 if [ "$FAILED" -ne 0 ]; then echo "Some examples failed."; exit 1; fi

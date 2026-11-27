@@ -19,6 +19,7 @@ README has the exact command, run from inside that folder.
 | [query-strings](query-strings) | [Query Strings](https://phillipharrington.com/php/query-strings) |
 | [forms](forms) | [Forms](https://phillipharrington.com/php/forms) |
 | [whats-in-the-middle](whats-in-the-middle) | [What's in the Middle](https://phillipharrington.com/php/whats-in-the-middle) |
+| [document-root](document-root) | [Document Root](https://phillipharrington.com/php/document-root) |
 
 ## Every example runs
 
