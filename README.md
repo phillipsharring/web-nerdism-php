@@ -1,0 +1,26 @@
+# Web Nerdism w/ PHP 101: the examples
+
+The code from the Try It sections of
+[Web Nerdism w/ PHP 101](https://phillipharrington.com/php), one folder per lesson.
+
+Everything runs in Docker, so there's nothing to install but Docker itself
+([Tools](https://phillipharrington.com/php/tools) has the setup). Each folder's
+README has the exact command, run from inside that folder.
+
+| Folder | Lesson |
+| --- | --- |
+| [client-server](client-server) | [Client/Server](https://phillipharrington.com/php/client-server) |
+| [anatomy-of-a-url](anatomy-of-a-url) | [Anatomy of a URL](https://phillipharrington.com/php/anatomy-of-a-url) |
+| [dns](dns) | [DNS](https://phillipharrington.com/php/dns) |
+| [http](http) | [HTTP, HTTPS and TLS](https://phillipharrington.com/php/http) |
+| [request-and-response](request-and-response) | [Request and Response](https://phillipharrington.com/php/request-and-response) |
+
+## Every example runs
+
+`tests/run.sh` runs every example the way its lesson says to and checks the
+output. GitHub Actions runs it on every push. The lesson pages show the same
+code as these files, and the site's build checks that they still match.
+
+## License
+
+MIT. Take it, change it, use it.
