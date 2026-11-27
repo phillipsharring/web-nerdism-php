@@ -1,0 +1,7 @@
+[
+    {"title": "Opening day at the café", "publishedOn": "2026-11-20", "draft": false},
+    {"title": "Winter hours", "publishedOn": "2026-11-25", "draft": false},
+    {"title": "Secret menu (not yet!)", "publishedOn": "2026-11-26", "draft": true},
+    {"title": "<script>alert(1)</script> & other tricks", "publishedOn": "2026-11-10", "draft": false},
+    {"title": "Spring menu", "publishedOn": "2027-03-01", "draft": false}
+]

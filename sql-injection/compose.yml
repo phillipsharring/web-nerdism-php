@@ -1,0 +1,35 @@
+# MySQL 8.4 with a table of members, and PHP's built-in server in front of it.
+# The passwords are pretend ones, for this example on your own computer only.
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root-password
+      MYSQL_DATABASE: course
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app-password
+      LANG: C.UTF-8
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "app", "-papp-password", "--silent"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
+
+  php:
+    build: .
+    command: php -S 0.0.0.0:8000
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: course
+      DB_USER: app
+      DB_PASSWORD: app-password
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy

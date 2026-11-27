@@ -1,0 +1,23 @@
+/* A selector picks elements. The rules in braces style them. */
+body {
+    font-family: system-ui, sans-serif;
+    max-width: 40rem;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+/* A class: every element with class="note". */
+.note {
+    color: #555;
+}
+
+/* The dark theme. Change the body's class, and everything inside follows. */
+.dark {
+    background: #111;
+    color: #eee;
+}
+
+/* More specific than .note alone, so it wins inside .dark. */
+.dark .note {
+    color: #aaa;
+}

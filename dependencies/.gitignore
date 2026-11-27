@@ -1,0 +1,5 @@
+# The Try It makes these on purpose, with a version that has known holes.
+# They stay out of git, so the repo never carries the vulnerable version.
+composer.json
+composer.lock
+vendor/

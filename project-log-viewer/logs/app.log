@@ -1,0 +1,5 @@
+[2026-11-27 09:00:01] INFO Started
+[2026-11-27 09:00:14] INFO Signup: someone@example.com
+[2026-11-27 09:02:40] WARNING Slow query: 2.4 seconds
+[2026-11-27 09:05:12] ERROR Mail server did not answer
+[2026-11-27 09:05:30] INFO Mail sent on the second try

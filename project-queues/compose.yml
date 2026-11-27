@@ -1,0 +1,47 @@
+# MySQL, Mailpit (a pretend mail server with a web page to read what it
+# catches), the web app, and a worker that runs the jobs. Local values only.
+x-app: &app
+  build: .
+  working_dir: /app
+  volumes:
+    - ./:/app
+  environment:
+    DB_HOST: db
+    DB_NAME: course
+    DB_USER: app
+    DB_PASSWORD: app-password
+    MAILER_DSN: smtp://mailpit:1025
+  depends_on:
+    db:
+      condition: service_healthy
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: course
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app-password
+      MYSQL_ROOT_PASSWORD: root-password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uapp", "-papp-password"]
+      interval: 2s
+      retries: 60
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "${MAIL_PORT:-8025}:8025"
+
+  app:
+    <<: *app
+    command: php -S 0.0.0.0:8000 -t public
+    ports:
+      - "${APP_PORT:-8000}:8000"
+
+  worker:
+    <<: *app
+    command: php bin/worker.php
+    restart: unless-stopped

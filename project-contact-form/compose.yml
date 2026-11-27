@@ -1,0 +1,21 @@
+# The contact form on port 8000, and Mailpit, which catches everything it
+# sends, on 8025. Nothing leaves your computer.
+services:
+  php:
+    image: php:8.4-cli
+    command: php -S 0.0.0.0:8000 -t public
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      MAIL_HOST: mailpit
+      MAIL_PORT: 1025
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      - mailpit
+
+  mailpit:
+    image: axllent/mailpit:v1.30.5
+    ports:
+      - "${MAILPIT_PORT:-8025}:8025"

@@ -1,0 +1,46 @@
+# MySQL, Mailpit (a pretend mail server with a web page to read what it
+# catches), and the web app. Local values only.
+x-app: &app
+  build: .
+  working_dir: /app
+  volumes:
+    - ./:/app
+  environment:
+    DB_HOST: db
+    DB_NAME: course
+    DB_USER: app
+    DB_PASSWORD: app-password
+    MAILER_DSN: smtp://mailpit:1025
+    SITE_URL: "http://localhost:${APP_PORT:-8000}"
+    # Signs unsubscribe links. A real one is long, random, and kept out of git.
+    NEWSLETTER_SECRET: local-example-only-change-me
+  depends_on:
+    db:
+      condition: service_healthy
+
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: course
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app-password
+      MYSQL_ROOT_PASSWORD: root-password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uapp", "-papp-password"]
+      interval: 2s
+      retries: 60
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "${MAIL_PORT:-8025}:8025"
+
+  app:
+    <<: *app
+    command: php -S 0.0.0.0:8000 -t public
+    ports:
+      - "${APP_PORT:-8000}:8000"
+

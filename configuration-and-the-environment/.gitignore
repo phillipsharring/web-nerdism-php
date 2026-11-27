@@ -1,0 +1,2 @@
+# Real settings and secrets stay on the machine they belong to.
+.env

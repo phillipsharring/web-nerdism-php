@@ -1,0 +1,12 @@
+# Cron gives each job almost no environment: no DB_HOST, and a PATH of just
+# /usr/bin:/bin. So the settings are set here, and php is named in full.
+# (Local example values only. A server's real ones don't go in git.)
+DB_HOST=db
+DB_NAME=course
+DB_USER=app
+DB_PASSWORD=app-password
+
+# minute  hour  day-of-month  month  day-of-week  user  command
+# Every minute here, so you can watch it. On a real server, once a night is plenty:
+# 15 3 * * *  ...
+*  *  *  *  *  root  cd /app && /usr/local/bin/php bin/prune.php >> var/prune.log 2>&1

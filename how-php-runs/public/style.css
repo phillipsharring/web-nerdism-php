@@ -1,0 +1,4 @@
+/* A static file: nginx sends it without asking PHP. */
+body {
+    font-family: sans-serif;
+}

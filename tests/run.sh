@@ -57,7 +57,7 @@ if [ "$#" -eq 0 ]; then
     files=("$ROOT"/tests/lessons/*.sh)
 else
     for name in "$@"; do
-        match=("$ROOT"/tests/lessons/*-"$name".sh)
+        match=("$ROOT"/tests/lessons/[0-9][0-9][0-9]-"$name".sh)
         [ "${#match[@]}" -eq 1 ] || { echo "no test file for '$name'"; exit 1; }
         files+=("${match[0]}")
     done

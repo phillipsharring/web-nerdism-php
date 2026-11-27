@@ -1,0 +1,15 @@
+# types-of-types: https://phillipharrington.com/php/types-of-types
+out="$(cli types-of-types types.php)"
+expect "get_debug_type names each type" "$out" "float  3.14"
+expect "past PHP_INT_MAX is a float" "$out" "float(9.223372036854776E+18)"
+expect "'0' counts as false" "$out" "'0' is false"
+expect "  ...but 'false' doesn't" "$out" "'false' is true"
+expect "?string takes null" "$out" "Hello, stranger"
+expect "int|string keeps the type it was given" "$out" "id A7 is string"
+expect "a peek at an object" "$out" "DateTimeImmutable: Friday, November 27, 2026"
+out="$(cli types-of-types money.php)"
+expect "0.1 + 0.2 isn't 0.3" "$out" "float(0.30000000000000004)"
+expect "ten dimes in floats aren't a dollar" "$out" "float(0.9999999999999999)"
+expect "ten dimes in cents are" "$out" "int(100)"
+expect "cents show where the extra penny goes" "$out" "Each pays 3333 cents, and someone pays 1 more"
+expect "dollars only for display" "$out" '$100.00'

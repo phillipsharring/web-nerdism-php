@@ -1,0 +1,48 @@
+# Two containers: MySQL, and PHP's built-in server serving public/.
+# The passwords here are for this local example only.
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: course
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app-password
+      MYSQL_ROOT_PASSWORD: root-password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uapp", "-papp-password"]
+      interval: 2s
+      retries: 60
+
+  app:
+    build: .
+    command: php -S 0.0.0.0:8000 -t public
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: course
+      DB_USER: app
+      DB_PASSWORD: app-password
+      SITE_URL: "http://localhost:${APP_PORT:-8000}"
+      # From .env next to this file, which never goes in git. Test keys only.
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # The Stripe CLI, forwarding test-mode webhooks to the app:
+  #   docker compose --profile stripe up
+  stripe:
+    image: stripe/stripe-cli
+    command: listen --forward-to http://app:8000/webhook.php
+    environment:
+      STRIPE_API_KEY: ${STRIPE_SECRET_KEY:-}
+    depends_on:
+      - app
+    profiles: [stripe]

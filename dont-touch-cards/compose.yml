@@ -1,0 +1,21 @@
+# Your shop, and stripe-mock: a pretend Stripe API from Stripe, so this runs
+# without an account. To use your own Stripe sandbox instead, set
+# STRIPE_SECRET_KEY to your test key and STRIPE_API_BASE to nothing.
+services:
+  shop:
+    image: php:8.4-cli
+    command: php -S 0.0.0.0:8000 -t public
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-sk_test_123}
+      STRIPE_API_BASE: ${STRIPE_API_BASE-http://stripe-mock:12111}
+      SHOP_URL: ${SHOP_URL:-http://localhost:8000}
+    ports:
+      - "${SHOP_PORT:-8000}:8000"
+    depends_on:
+      - stripe-mock
+
+  stripe-mock:
+    image: stripe/stripe-mock:v0.206.0

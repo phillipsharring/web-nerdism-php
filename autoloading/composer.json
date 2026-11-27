@@ -1,0 +1,17 @@
+{
+    "name": "web-nerdism/autoloading",
+    "description": "The example for Autoloading with Composer and PSR-4.",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "src/"
+        }
+    },
+    "scripts": {
+        "hello": "php hello.php"
+    }
+}

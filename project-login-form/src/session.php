@@ -1,0 +1,18 @@
+<?php
+declare(strict_types=1);
+
+function start_session(): void
+{
+    session_start([
+        'use_strict_mode' => true,      // refuse ids the server didn't make
+        'cookie_httponly' => true,
+        'cookie_samesite' => 'Lax',
+        'cookie_secure' => ($_SERVER['HTTPS'] ?? 'off') !== 'off',
+    ]);
+}
+
+function redirect(string $to): never
+{
+    header('Location: ' . $to, true, 303);
+    exit;
+}

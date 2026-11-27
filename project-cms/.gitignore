@@ -1,0 +1,4 @@
+# Uploaded files are data, not code: keep them out of git.
+storage/uploads/*
+public/uploads/*
+!.gitkeep

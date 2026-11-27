@@ -1,0 +1,25 @@
+# A pretend API to call, and a container to run the client in. The token
+# comes from .env next to this file (see .env.example), never from this file.
+services:
+  api:
+    image: php:8.4-cli
+    command: php -S 0.0.0.0:8000 -t api
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      API_TOKEN: ${API_TOKEN:-}
+    ports:
+      - "${API_PORT:-8000}:8000"
+
+  client:
+    image: php:8.4-cli
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      API_URL: http://api:8000
+      API_TOKEN: ${API_TOKEN:-}
+    depends_on:
+      - api
+    profiles: [client]

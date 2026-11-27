@@ -1,0 +1,9 @@
+{
+    "require-dev": {
+        "squizlabs/php_codesniffer": "^4.0"
+    },
+    "scripts": {
+        "check": "phpcs",
+        "fix": "phpcbf"
+    }
+}

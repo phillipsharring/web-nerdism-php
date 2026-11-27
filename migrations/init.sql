@@ -1,0 +1,1 @@
+-- Empty on purpose: migrate.php builds every table, one migration at a time.

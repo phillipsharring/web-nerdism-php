@@ -1,0 +1,19 @@
+# Two sites on two ports: yours on 8000, and an attacker's page on 8001.
+services:
+  site:
+    image: php:8.4-cli
+    command: php -S 0.0.0.0:8000
+    working_dir: /app
+    volumes:
+      - ./site:/app
+    ports:
+      - "${SITE_PORT:-8000}:8000"
+
+  evil:
+    image: php:8.4-cli
+    command: php -S 0.0.0.0:8000
+    working_dir: /app
+    volumes:
+      - ./evil:/app
+    ports:
+      - "${EVIL_PORT:-8001}:8000"

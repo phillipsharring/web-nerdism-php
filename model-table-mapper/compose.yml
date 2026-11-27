@@ -1,0 +1,34 @@
+# MySQL, and a PHP container to run demo.php against it.
+# The passwords are in this file only because it's an example. Real ones go in a
+# .env file that never goes in git.
+services:
+  db:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: root-password
+      MYSQL_DATABASE: course
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app-password
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      # 127.0.0.1, not localhost: MySQL only answers on it once init.sql has run.
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "app", "-papp-password"]
+      interval: 2s
+      timeout: 5s
+      retries: 60
+
+  php:
+    build: .
+    command: php demo.php
+    working_dir: /app
+    volumes:
+      - ./:/app
+    environment:
+      DB_HOST: db
+      DB_NAME: course
+      DB_USER: app
+      DB_PASSWORD: app-password
+    depends_on:
+      db:
+        condition: service_healthy
