@@ -77,6 +77,15 @@ expect "  ...and its Content-Type" "$out" "application/x-www-form-urlencoded"
 expect "the teapot" "$(curl -si "http://localhost:$PORT/teapot")" "418"
 stop
 
+echo "content-types"
+serve content-types
+expect "html by default" "$(curl -sI "http://localhost:$PORT/")" "text/html"
+expect "plain text, charset added by PHP" "$(curl -sI "http://localhost:$PORT/?as=text")" "text/plain;charset=UTF-8"
+expect "unknown bytes" "$(curl -sI "http://localhost:$PORT/?as=bytes")" "application/octet-stream"
+expect "a named download" "$(curl -sI "http://localhost:$PORT/?save=1")" 'attachment; filename="hello.html"'
+expect "the body never changes" "$(curl -s "http://localhost:$PORT/?as=bytes")" "<h1>Hello</h1>"
+stop
+
 echo
 if [ "$FAILED" -ne 0 ]; then echo "Some examples failed."; exit 1; fi
 echo "Every example ran."

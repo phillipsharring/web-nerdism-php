@@ -14,6 +14,7 @@ README has the exact command, run from inside that folder.
 | [dns](dns) | [DNS](https://phillipharrington.com/php/dns) |
 | [http](http) | [HTTP, HTTPS and TLS](https://phillipharrington.com/php/http) |
 | [request-and-response](request-and-response) | [Request and Response](https://phillipharrington.com/php/request-and-response) |
+| [content-types](content-types) | [Content Types](https://phillipharrington.com/php/content-types) |
 
 ## Every example runs
 
