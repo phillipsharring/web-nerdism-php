@@ -16,6 +16,7 @@ README has the exact command, run from inside that folder.
 | [request-and-response](request-and-response) | [Request and Response](https://phillipharrington.com/php/request-and-response) |
 | [content-types](content-types) | [Content Types](https://phillipharrington.com/php/content-types) |
 | [cookies](cookies) | [Cookies](https://phillipharrington.com/php/cookies) |
+| [query-strings](query-strings) | [Query Strings](https://phillipharrington.com/php/query-strings) |
 
 ## Every example runs
 
