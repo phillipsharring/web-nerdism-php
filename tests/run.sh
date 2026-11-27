@@ -57,9 +57,11 @@ if grep -qF "#here" <<< "$out"; then fail "the fragment never arrives" "$out"; e
 stop
 
 echo "dns"
-out="$(cli dns dns.php phillipharrington.com)"
+out="$(cli dns dns.php example.com)"
 expect "A records" "$out" "[type] => A"
-expect "MX records" "$out" "[type] => MX"
+expect "example.com's null MX" "$out" "[pri] => 0"
+out="$(cli dns dns.php gmail.com)"
+expect "gmail's MX records, with priorities" "$out" "gmail-smtp-in.l.google.com"
 out="$(cli dns -r 'var_dump(gethostbyname("no-such-name.invalid"));')"
 expect "gethostbyname returns the name when it fails" "$out" 'string(20) "no-such-name.invalid"'
 

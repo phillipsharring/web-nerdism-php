@@ -19,8 +19,9 @@ README has the exact command, run from inside that folder.
 ## Every example runs
 
 `tests/run.sh` runs every example the way its lesson says to and checks the
-output. GitHub Actions runs it on every push. The lesson pages show the same
-code as these files, and the site's build checks that they still match.
+output. GitHub Actions runs it on every push, and weekly. The lesson pages
+don't keep their own copy: the site's build reads these files and puts them
+on the page, so what you read is what was tested.
 
 ## License
 

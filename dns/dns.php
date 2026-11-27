@@ -1,5 +1,5 @@
 <?php
-$host = $argv[1] ?? 'phillipharrington.com';
+$host = $argv[1] ?? 'example.com';
 
 echo gethostbyname($host), "\n";
 print_r(dns_get_record($host, DNS_A));
