@@ -18,6 +18,7 @@ README has the exact command, run from inside that folder.
 | [cookies](cookies) | [Cookies](https://phillipharrington.com/php/cookies) |
 | [query-strings](query-strings) | [Query Strings](https://phillipharrington.com/php/query-strings) |
 | [forms](forms) | [Forms](https://phillipharrington.com/php/forms) |
+| [whats-in-the-middle](whats-in-the-middle) | [What's in the Middle](https://phillipharrington.com/php/whats-in-the-middle) |
 
 ## Every example runs
 
