@@ -37,5 +37,5 @@ if ($posted && !in_array($size, $sizes, true)) {
         </select>
     </label></p>
     <p><label><input type="checkbox" name="wrap"<?= $wrap ? ' checked' : '' ?>> Gift wrap</label></p>
-    <p><button>Order</button></p>
+    <p><button type="submit">Order</button></p>
 </form>
