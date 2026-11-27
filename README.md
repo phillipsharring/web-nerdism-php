@@ -53,7 +53,9 @@ README has the exact command, run from inside that folder.
 | [migrations](migrations) | [Migrations](https://phillipharrington.com/php/migrations) |
 | [sessions](sessions) | [Sessions](https://phillipharrington.com/php/sessions) |
 | [output-buffering](output-buffering) | [Output Buffering](https://phillipharrington.com/php/output-buffering) |
+| [caching](caching) | [Caching](https://phillipharrington.com/php/caching) |
 | [sending-a-file](sending-a-file) | [Sending a File](https://phillipharrington.com/php/sending-a-file) |
+| [naming-things](naming-things) | [Naming Things](https://phillipharrington.com/php/naming-things) |
 | [classes-and-objects](classes-and-objects) | [Classes and Objects](https://phillipharrington.com/php/classes-and-objects) |
 | [abstract-classes](abstract-classes) | [Abstract Classes](https://phillipharrington.com/php/abstract-classes) |
 | [interfaces](interfaces) | [Interfaces](https://phillipharrington.com/php/interfaces) |
