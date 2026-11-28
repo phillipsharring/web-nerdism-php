@@ -9,4 +9,5 @@ $tags = array_filter((array) ($_GET['tag'] ?? []), 'is_string');
 echo "Searching for: $q\n";
 echo "Page: $page\n";
 echo 'Tags: ', implode(', ', $tags), "\n\n";
+echo "The contents of \$_GET:\n";
 print_r($_GET);
